@@ -18,9 +18,13 @@ import {
   Provider as PaperProvider,
 } from 'react-native-paper';
 import merge from 'deepmerge';
+import PreferencesContext from './PreferencesContext';
 
 const CombinedDefaultTheme = merge(PaperDefaultTheme, NavigationDefaultTheme);
 const CombinedDarkTheme = merge(PaperDarkTheme, NavigationDarkTheme);
+
+// const {toggleTheme, isThemeDark} = React.useContext(PreferencesContext);
+
 // import Title from './src/components/title';
 // import SelectBox from './src/components/selectbox';
 
@@ -58,21 +62,33 @@ const DetailsScreen = props => {
   );
 };
 
-export const PreferencesContext = React.createContext({
-  toggleTheme: () => {},
-  isThemeDark: false,
-});
-
 const App = () => {
+  const [isThemeDark, setIsThemeDark] = React.useState(false);
+  const toggleTheme = React.useCallback(() => {
+    return setIsThemeDark(!isThemeDark);
+  }, [isThemeDark]);
+
+  let theme = isThemeDark ? CombinedDarkTheme : CombinedDefaultTheme;
+
+  const preferences = React.useMemo(
+    () => ({
+      toggleTheme,
+      isThemeDark,
+    }),
+    [toggleTheme, isThemeDark],
+  );
+
   return (
-    <PaperProvider theme={CombinedDefaultTheme}>
-      <NavigationContainer theme={CombinedDefaultTheme}>
-        <Stack.Navigator initialRouteName="Home">
-          <Stack.Screen name="Home" component={HomeScreen} />
-          <Stack.Screen name="Details" component={DetailsScreen} />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </PaperProvider>
+    <PreferencesContext.Provider value={preferences}>
+      <PaperProvider theme={theme}>
+        <NavigationContainer theme={theme}>
+          <Stack.Navigator initialRouteName="Home">
+            <Stack.Screen name="Home" component={HomeScreen} />
+            <Stack.Screen name="Details" component={DetailsScreen} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </PaperProvider>
+    </PreferencesContext.Provider>
   );
 };
 export default App;
