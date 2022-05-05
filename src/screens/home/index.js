@@ -1,16 +1,25 @@
 import React from 'react';
-import {View, Text, Button} from 'react-native';
+import {TouchableOpacity} from 'react-native';
+import {Card, Title, Paragraph} from 'react-native-paper';
 
-const HomeScreen = ({navigation}) => {
-  return (
-    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      <Text>Home Screen</Text>
-      <Button
-        title="Go to Details"
-        onPress={() => navigation.navigate('Sample')}
-      />
-    </View>
-  );
-};
+const title = 'title';
+const content = 'content';
+
+const HomeScreen = ({navigation}) => (
+  <TouchableOpacity
+    onPress={() =>
+      navigation?.push('Details', {
+        title,
+        content,
+      })
+    }>
+    <Card>
+      <Card.Content>
+        <Title>{title}</Title>
+        <Paragraph>{content}</Paragraph>
+      </Card.Content>
+    </Card>
+  </TouchableOpacity>
+);
 
 export default HomeScreen;
